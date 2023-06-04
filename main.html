@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>방명록 목록</title>
+    <style>
+    	#title {
+			font: 20px soild black;
+			text-align: center;
+			margin-bottom: 30px;
+		}
+		table {
+			display: table;
+      		table-layout: fixed;
+			font: 10px soild black;
+			padding: 20px;
+			margin: 15px 0px 15px 0px;
+			border: 2px solid #c0c0c0;
+			border-collapse: collapse;
+			width: 100%;
+			text-align: center;
+			outline: 1px solid #20b2aa;
+		}
+		th {
+			display: table-cell;
+			margin: 15px;
+			border: 1px solid #c0c0c0;
+			background-color: #dcdcdc;
+			border-collapse: collapse;
+		}
+		td {
+			display: table-cell;
+			margin: 15px;
+			font-weight: 400;
+			border: 1px solid #c0c0c0;
+			background-color: #20b2aa;
+			border-collapse: collapse;
+			text-align: left;
+		}
+    	#btn {
+			font-size: 12px;
+			color: white;
+			background-color: #1e90ff;	
+			padding: 5px 20px 5px 20px;
+			border:none;
+			border-radius: 5px;
+			position: absolute;
+    		left: 50%;
+    		transform: translateX(-50%);
+		}
+    </style>
+</head>
+<body>
+<div id="title">방명록 목록</div>
+<table>
+    <tr>
+        <th>번호</th>
+        <th>작성자</th>
+        <th>이메일</th>
+        <th>작성일</th>
+        <th>제목</th>
+    </tr>
+</table>
+<div>
+    <input type="button" value="등록" onclick="goToInputPage()" id="btn">
+</div> 
+<script>
+    window.onload = function() {
+        var entries = JSON.parse(localStorage.getItem('entries')) || [];
+
+        if (entries.length > 0) {
+            var table = document.querySelector('table');
+            table.innerHTML = "<tr><th>번호</th><th>작성자</th><th>이메일</th><th>작성일</th><th>제목</th></tr>";
+           
+            for (var i = 0; i < entries.length; i++) {
+                 var entry = entries[i];
+                var row = document.createElement('tr');
+               
+                var numberCell = document.createElement('td');
+                numberCell.textContent = i + 1;
+                var nicknameCell = document.createElement('td');
+                nicknameCell.textContent = entry.nickname;
+                var emailCell = document.createElement('td');
+                emailCell.textContent = entry.email;
+                var inputDateCell = document.createElement('td');
+                inputDateCell.textContent = formatDate(entry.inputdate);
+                var titleCell = document.createElement('td');
+                var titleLink = document.createElement('a');
+                titleLink.textContent = entry.title;
+                titleLink.setAttribute('href', '#');
+                titleLink.setAttribute('onclick', 'goToEditPage(' + i + ')');
+                titleCell.appendChild(titleLink);
+               
+                row.appendChild(numberCell);
+                row.appendChild(nicknameCell);
+                row.appendChild(emailCell);
+                row.appendChild(inputDateCell);
+                row.appendChild(titleCell);
+
+                table.appendChild(row);
+            }
+        }
+
+
+        localStorage.removeItem('guestbookList');
+    };
+    
+    function getCurrentDate() {
+        var d = new Date();
+        var year = d.getFullYear();
+        var month = d.getMonth() + 1;
+        var date = d.getDate();
+
+        month = (month < 10 ? "0" : "") + month;
+        date = (date < 10 ? "0" : "") + date;
+
+        var inputdate = year + "-" + month + "-" + date;
+        return inputdate;
+    }
+
+    function formatDate(dateStr) {
+        var date = new Date(dateStr);
+        var year = date.getFullYear();
+        var month = date.getMonth() + 1;
+        var day = date.getDate();
+
+        month = (month < 10 ? "0" : "") + month;
+        day = (day < 10 ? "0" : "") + day;
+
+        return year + "-" + month + "-" + day;
+    }
+
+    function goToInputPage() {
+        window.location.href = "input.html";
+    }
+
+    function goToEditPage(index) {
+        var entries = JSON.parse(localStorage.getItem('entries'));
+        var entry = entries[index];
+        var query = '?index=' + index;
+        window.location.href = "edit.html" + query;
+    }
+
+   
+</script>
+</body>
+</html>

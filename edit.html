@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>방명록 수정</title>
+      <style>
+		#h2 {
+			font: 20px soild black;
+			margin-left: 110px;
+			margin-bottom: 50px;
+		}
+		div table {
+			font-size: 10px;
+			font-style: border;
+			padding: 20px;
+			margin: 15px;
+			border: 2px solid #c0c0c0;
+			color: #20b2aa;
+			border-collapse: collapse;
+			width: 300px;
+			text-align: center;
+		}
+		div td {
+			border: 2px solid #c0c0c0;
+			color: #20b2aa;
+			border-collapse: collapse;
+			text-align: center;
+		}
+		
+		div tr:hover { background-color: #F5F5F5; }
+		
+		textarea {
+			margin-top: 15px;
+			margin-left:15px;
+			width: 280px;
+			height: 150px;
+			border: 6px solid #dcdcdc;
+			outline: 2px solid #c0c0c0;
+		}
+		#btn {
+			font-size: 12px;
+	 		margin: 20px;
+			color: white;
+			background-color: #1e90ff;	
+			padding: 5px 20px 5px 20px;
+			border:none;
+			border-radius: 5px;
+		}
+		input {
+			width:80%;
+		}
+	</style>
+</head>
+<body>
+<div id="h2">방명록 수정</div>
+<div class="inputTable">
+<form>
+	<table>
+		<tr>
+			<td><label for="nickname">작성자</label></td>
+        	<td><input type="text" id="nickname" name="nickname" size="10"></td>
+       	</tr>
+       	<tr>
+			<td><label for="email">이메일</label></td>
+        	<td><input type="email" id="email" name="email" size="10"></td>
+       	</tr>
+		<tr>
+			<td><label for="title">제목</label></td>
+        	<td><input type="text" id="title" name="title" size="10"></td>
+       	</tr>
+        <tr>
+			<td><label for="password">비밀번호</label></td>
+        	<td><input type="text" id="password" name="password" size="10"></td>
+       	</tr>
+    </table>
+</form>
+</div>
+<textarea id="content" name="content"></textarea>
+ <table>
+    <tr>
+      <td><input type="submit" value="저장" onclick="saveEntry()" id="btn"></td>
+      <td><input type="button" value="삭제" onclick="clearInputFields()" id="btn"></td>
+      <td><input type="button" value="목록" onclick="goToListPage()" id="btn"></td>
+    </tr>
+  </table>
+
+
+<script>
+    var index = getParameterByName('index');
+    var entries = JSON.parse(localStorage.getItem('entries'));
+    var entry = entries[index];
+
+    // input form 초기화
+    document.getElementById('nickname').value = entry.nickname;
+    document.getElementById('email').value = entry.email;
+    document.getElementById('title').value = entry.title;
+    document.getElementById('content').value = entry.content;
+
+    function saveEntry() {
+        var nickname = document.getElementById('nickname').value.trim();
+        var email = document.getElementById('email').value.trim();
+        var title = document.getElementById('title').value.trim();
+        var content = document.getElementById('content').value.trim();
+
+        if (nickname === '' || email === '' || title === '' || content === '') {
+            alert('모든 항목은 필수 입력사항입니다.');
+            return;
+        }
+
+        var entry = {
+            nickname: nickname,
+            email: email,
+            title: title,
+            content: content,
+            inputdate: getCurrentDate()
+        };
+
+        var entries = JSON.parse(localStorage.getItem('entries'));
+        entries[index] = entry;
+        localStorage.setItem('entries', JSON.stringify(entries));
+
+        alert('수정이 완료되었습니다.');
+        goToListPage();
+    }
+
+    function goToListPage() {
+        window.location.href = "main.html";
+    }
+
+    function getCurrentDate() {
+        var d = new Date();
+        var year = d.getFullYear();
+        var month = d.getMonth() + 1;
+        var date = d.getDate();
+
+        month = (month < 10 ? "0" : "") + month;
+        date = (date < 10 ? "0" : "") + date;
+
+        var inputdate = year + "-" + month + "-" + date;
+        return inputdate;
+    }
+
+    function getParameterByName(name) {
+        var url = window.location.href;
+        name = name.replace(/[\[\]]/g, "\\$&");
+        var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)");
+        var results = regex.exec(url);
+        if (!results) return null;
+        if (!results[2]) return '';
+        return decodeURIComponent(results[2].replace(/\+/g, " "));
+    }
+    
+    function clearInputFields() {
+        document.getElementById('nickname').value = "";
+        document.getElementById('email').value = "";
+        document.getElementById('title').value = "";
+        document.getElementById('content').value = "";
+    }
+</script>
+</body>
+</html>

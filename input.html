@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>방명록 입력</title>
+  <style>
+		#title {
+			font-size: 20px;
+			margin-left: 100px;
+			margin-bottom: 50px;
+		}
+		div table {
+			display: table;
+			font-size: 10px;
+			font-style: border;
+			padding: 20px;
+			margin: 15px;
+			border: 2px solid #c0c0c0;
+			color: #20b2aa;
+			border-collapse: collapse;
+			width: 300px;
+			text-align: center;
+		}
+		div td {
+			display: table-cell;
+			margin: 15px;
+			border: 2px solid #c0c0c0;
+			color: #20b2aa;
+			border-collapse: collapse;
+			width: 500px;
+			text-align: center;
+		}
+		div tr:hover { background-color: #F5F5F5; }
+		
+		textarea {
+			margin-top: 15px;
+			margin-left:15px;
+			width: 280px;
+			height: 150px;
+			border: 6px solid #dcdcdc;
+			outline: 2px solid #c0c0c0;
+		}
+		#btn {
+			font-size: 12px;
+	 		margin: 20px;
+			color: white;
+			background-color: #1e90ff;	
+			padding: 5px 20px 5px 20px;
+			border:none;
+			border-radius: 5px;
+		}
+	</style>
+</head>
+<body>
+<div id="title">방명록 입력</div>
+<div class="inputTable"> 
+<table>
+  <tr>
+    <td>작성자</td>
+    <td><input type="text" class="nickname"></td>
+  </tr>
+  <tr>
+    <td>이메일</td>
+    <td><input type="text" class="e-mail"></td>
+  </tr>
+  <tr>
+    <td>제목</td>
+    <td><input type="text" class="title"></td>
+  </tr>
+  <tr>
+    <td>비밀번호</td>
+    <td><input type="password" class="password"></td>
+  </tr>
+</table>
+</div>
+<form>
+  <textarea></textarea>
+  <table>
+    <tr>
+      <td><input type="button" value="입력" onclick="validateInput()" id="btn"></td>
+      <td><input type="button" value="취소" onclick="clearInputFields()" id="btn"></td>
+      <td><input type="button" value="목록" onclick="goToListPage()" id="btn"></td>
+    </tr>
+  </table>
+</form>
+
+<script>
+  function getCurrentDate() {
+    var d = new Date();
+    var year = d.getFullYear();
+    var month = d.getMonth() + 1;
+    var date = d.getDate();
+
+    month = (month < 10 ? "0" : "") + month;
+    date = (date < 10 ? "0" : "") + date;
+
+    var inputdate = year + "-" + month + "-" + date;
+    return inputdate;
+  }
+
+  function validateInput() {
+    var nicknameInput = document.querySelector('.nickname');
+    var emailInput = document.querySelector('.e-mail');
+    var titleInput = document.querySelector('.title');
+    var passwordInput = document.querySelector('.password');
+    var contentTextarea = document.querySelector('form textarea');
+
+    var nickname = nicknameInput.value.trim();
+    var email = emailInput.value.trim();
+    var title = titleInput.value.trim();
+    var password = passwordInput.value;
+    var content = contentTextarea.value.trim();
+    var inputdate = getCurrentDate(); 
+
+    if (nickname === '' || email === '' || title === '' || content === '') {
+        alert('모든 항목은 필수 입력사항입니다.');
+        return;
+    }
+
+    var entry = {
+      nickname: nickname,
+      email: email,
+      inputdate: inputdate, 
+      title: title,
+      password: password,
+      content: content
+    };
+
+    var entries = localStorage.getItem('entries');
+    if (!entries) {
+      entries = [];
+    } else {
+      entries = JSON.parse(entries);
+    }
+
+    entries.push(entry);
+
+    localStorage.setItem('entries', JSON.stringify(entries));
+
+    clearInputFields();
+
+    window.location.href = "main.html";
+  }
+
+  function clearInputFields() {
+    document.querySelector('.nickname').value = "";
+    document.querySelector('.e-mail').value = "";
+    document.querySelector('.title').value = "";
+    document.querySelector('.password').value = "";
+  }
+
+  function goToListPage() {
+    window.location.href = "main.html";
+  }
+</script>
+
+</body>
+</html>
